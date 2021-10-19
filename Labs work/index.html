@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title>After School Club</title>
+
+
+    </head>
+
+
+    <script src="https://unpkg.com/vue"></script>
+
+
+    <style>
+#app>div{
+    background-color: wheat;
+    margin-left: 40%;
+    margin-right: 10%;
+    width: 300px;
+    height: 300px;
+    text-align: center;
+    border-radius: 5px;
+    
+}      
+
+#checkout{
+    margin: auto;
+    display: flex;
+}
+
+</style>
+    <body>
+
+        <div id="app">
+            <button v-on:click= 'showCheckout' id="checkout">
+                {{cartItemCount}}
+                <span class="fa solid fa-cart-plus"
+                    style="font-size:20px;"></span>
+                Checkout </button>
+
+            <div v-if='showProduct'>
+                <h1 v-text="sitename"></h1>
+                <p> Subject : {{product.name}}</p>
+                <p>Location : {{product.location}}</p>
+                <P>Price : {{product.price}}</P>
+                <P>Availbility : {{product.availableInventory}}</P>
+                <img v-bind:src="product.image" alt="image" width="300"
+                    height="200">
+                <button v-on:click='addToCart' v-if="canAddToCart">Add to
+                    Cart</button>
+                <button disabled='disabled' v-else> add to Cart</button></div>
+            <div v-else> checkout</div>
+        </div>
+
+        <script>
+        let webstore = new Vue({
+            el: '#app',
+            data: {
+                showProduct:true,
+                sitename: 'After School Club',
+                product: {
+                    id: 1321,
+                    name: "Maths",
+                    location: "Hendon",
+                    price: 40.00,
+                    image: "mathsPic.jpg",
+                    availableInventory:6
+
+                },
+                cart:[]
+            },
+           methods:{
+               addToCart: function(){
+            this.cart.push(this.product.id);
+        
+           
+               },
+
+
+               showCheckout(){
+                   this.showProduct = this.showProduct ? false : true;
+               }
+           },
+           computed:{
+               cartItemCount : function(){
+                   return this.cart.length|| '';
+               },
+
+               canAddToCart: function(){
+                return this.product.availableInventory >this.cartItemCount;
+               }
+
+           },
+
+        });
+
+
+
+
+    </script>
+    </body>
+
+</html>
