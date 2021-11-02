@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>After School Club</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <title>After School Club</title>
+    </head>
 
 
-</head>
+    <script src="https://unpkg.com/vue"></script>
 
-
-<script src="https://unpkg.com/vue"></script>
-
-<style>
+    <style>
     #app>div {
         background-color: wheat;
         margin-left: 40%;
@@ -23,58 +22,118 @@
         height: 300px;
         text-align: center;
         border-radius: 5px;
-
     }
-
     #checkout {
         margin: auto;
         display: flex;
     }
 </style>
+    <body>
 
-<body>
+        <div id="app">
+            <button v-on:click='showCheckout' id="checkout" v-show="cart.length>
+                0">
+                {{cartItemCount}}
+                <span class="fa solid fa-cart-plus" style="font-size:20px;"></span>
+                Checkout </button>
 
-    <div id="app">
-        <button v-on:click='showCheckout' id="checkout" v-show ="cart.length>  0">
-            {{cartItemCount}}
-            <span class="fa solid fa-cart-plus" style="font-size:20px;"></span>
-            Checkout </button>
+            <div v-if='showProduct'>
+                <h1 v-text="sitename"></h1>
+                <p> Subject : {{product.name}}</p>
+                <p>Location : {{product.location}}</p>
+                <P>Price : £{{product.price}}</P>
+                <P>Availbility : {{product.spaces}}</P>
+                <img v-bind:src="product.image" alt="image" width="300"
+                    height="200">
+                <button v-on:click='addToCart' v-if="canAddToCart">Add to
+                    Cart</button>
+                <button disabled='disabled' v-else>Add to cart</button>
+            </div>
+            <div v-else>
+                <h2>checkout</h2>
+                <p><strong>First Name :</strong><input
+                        v-model="order.firstName"></p>
+                <p><strong>Last Name:</strong><input
+                        v-model='order.lastName'></p>
+                <p><strong>Address:</strong><input v-model='order.address'></p>
+                <p><strong>City:</strong><input v-model='order.city'></p>
 
-        <div v-if='showProduct'>
-            <h1 v-text="sitename"></h1>
-            <p> Subject : {{product.name}}</p>
-            <p>Location : {{product.location}}</p>
-            <P>Price : {{product.price}}</P>
-            <P>Availbility : {{product.spaces}}</P>
-            <img v-bind:src="product.image" alt="image" width="300" height="200">
-            <button v-on:click='addToCart' v-if ="canAddToCart" >Add to
-                Cart</button>
-        
-                <button disabled='disabled' v-else>Add to cart</button> 
+                <p><strong>State:</strong>
+                    <select v-model='order.state'>
+                        <option disabled value="">State</option>
+                        <option value="Albama">AL</option>
+                        <option value="Arizona">AR</option>
+                        <option value="California">CA</option>
+                        <option value="Nevada">NV</option>
+                        <!-- <option v-for="(states, key) in states"
+                            v-bind:value='states'>
+                            {{key}}</option> -->
+                    </select>
+                </p>
+                <p><strong>Zip Code:</strong><input v-model='order.zip'></p>
+                <p>
+                    <input type="checkbox" id='gift' value='true'
+                        v-model='order.gift' :true-value= 'order.sendGift'
+                        :false-value='order.dontSendGift'>
+                    <label for="gift">Ship as a gift</label>
+                </p>
+
+                <p>
+                    <input type="radio" id="home" value="Home"
+                        v-model="order.method">
+                    <label for="home">Home</label>
+
+                    <input type="radio" id="business" value="Business"
+                        v-model="order.method"><label for="business">Business</label>
+                </p>
+                <h3>Order Information</h3>
+                <p>First Name :{{order.firstName}}</p>
+                <p>Last Name :{{order.lastName}}</p>
+                <p>Zip : {{order.zip}}</p>
+                <!-- <p>Address :{{order.address}}</p>
+                <p>City :{{order.city}}</p> -->
+                <p>State : {{order.state}}</p>
+                <p>Gift {{order.gift}}</p>
+                <button @click='submitForm'> place order </button>
+            </div>
         </div>
+
 
         <script>
             let webstore = new Vue({
                 el: '#app',
                 data: {
                     showProduct: true,
-                   
-                   
                     sitename: 'After School Club',
                     product: {
                         id: 1321,
-                        name: "Maths",
+                        name: "Mathmatics",
                         location: "Hendon",
                         price: 40.00,
                         image: "mathsPic.jpg",
                         spaces: 6
-
                     },
-                    cart: []
+                    cart: [],
+                    order:{
+                        firstName:'',
+                        lastName:'',
+                        address:'',
+                        city:'',
+                        zip:'',
+                        method:'',
+                    
+                        sendGift:'Send as a Gift',
+                        dontSendGift:'Do not send as a gift',
+                        // states:{
+                        //     AL:'ALbama',
+                        //     AR:'Arizona',
+                        //     CA: 'California',
+                        //     NV: 'Nevada'
+                        // },
+                    }   
                 },
                 methods: {
                     addToCart: function () {
-                        
                         if (this.product.spaces === 0){
                         this.disableBtn = true;}
                         else  {
@@ -82,32 +141,28 @@
                         this.cart.push(this.product.id)
                        }
                     },
-
-
                     showCheckout() {
-                        // this.showProduct = this.showProduct ? false : true;
-                        if(this.product.cart ===0 ){
-                            this.showCheckout = true;
+                         this.showProduct = this.showProduct ? false : true;
+                        //  if(this.product.cart ===0 ){
+                        //      this.showCheckout = true;
+                        //  }
+
+                       
+                    },
+                     submitForm() {
+                            alert('order Submitted')
+                            console.log('order submitted')
                         }
-                    }
                 },
                 computed: {
                     cartItemCount: function () {
                         return this.cart.length || '';
                     },
-
                     canAddToCart: function () {
                         return this.product.spaces > 0;
                     }
-
                 },
-
             });
-
-
-
-
         </script>
-</body>
-
+    </body>
 </html>
