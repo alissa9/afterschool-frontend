@@ -18,23 +18,25 @@
         <link rel="stylesheet" href="fontawesome-free-5.15.1/css/all.css">
         <title>Search</title>
       <script src="https://kit.fontawesome.com/afd6aa68df.js" crossorigin="anonymous"></script>
+      <script src="https://unpkg.com/vue"></script>
 
+
+<!-- search icon -->
+      <div class="box">
+        <form name="search">
+            <input type="text" class="input" name="txt" 
+            onmouseout="document.search.txt.value = ''">
+        </form>
+            <i class="fas fa-search"></i>
+    </div>
     </head>
 
 
-    <script src="https://unpkg.com/vue"></script>
+   
 
-    <style>
-
-</style>
+ 
     <body>
-        <div class="box">
-            <form name="search">
-                <input type="text" class="input" name="txt" 
-                onmouseout="document.search.txt.value = ''">
-            </form>
-                <i class="fas fa-search"></i>
-        </div>
+        
         
 
         <div id="app">
@@ -44,19 +46,18 @@
                 <span class="fa solid fa-cart-plus" style="font-size:20px;"></span>
                 Checkout </button>
 
-                
-                
+                <h1 v-text="sitename"></h1>
             <div v-if='showProduct'>
-
-                <div v-for='product in sortedProducts'>
-                    <h1 v-text="sitename"></h1>
-                   
-                    <p> Subject : {{product.name}}</p>
-                    <p>Location : {{product.location}}</p>
-                    <P>Price : <i class="fas fa-pound-sign"></i> {{product.price}}</P>
-                    <P>Availbility : {{product.spaces}}</P>
+                
+                <div v-for='product in sortedProducts' id="items">
+                    
                     <img v-bind:src="product.image" alt="image" width="300"
                         height="200">
+                    <p> Subject : {{product.name}}</p>
+                    <p>Location : {{product.location}}</p>
+                    <P>Price :  £{{product.price}}</P>
+                    <P>Availbility : {{product.spaces}}</P>
+                   
                     <button
                         v-on:click='addToCart(product)':disabled='!canAddToCart(product)'>Add
                         to
@@ -74,7 +75,11 @@
                 </div>
             </div>
             <div v-else>
+                
                 <h2>checkout</h2>
+                <li v-for='carts in cart' :key='carts.id'>
+                    {{carts.id}}
+                </li>
                 <p><strong>First Name :</strong><input
                         v-model="order.firstName"></p>
                 <p><strong>Last Name:</strong><input
