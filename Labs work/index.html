@@ -77,9 +77,9 @@
             <div v-else>
                 
                 <h2>checkout</h2>
-                <li v-for='carts in cart' :key='carts.id'>
-                    {{carts.id}}
-                </li>
+                
+                    <p v-for='carts in cart' :key='cart.id'>{{carts}}</p>
+               
                 <p><strong>First Name :</strong><input
                         v-model="order.firstName"></p>
                 <p><strong>Last Name:</strong><input
