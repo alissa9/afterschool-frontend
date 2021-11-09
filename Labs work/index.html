@@ -8,6 +8,7 @@
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title>After School Club</title>
+        <script src="products.js"></script>
     </head>
 
 
@@ -38,16 +39,30 @@
                 Checkout </button>
 
             <div v-if='showProduct'>
-                <h1 v-text="sitename"></h1>
-                <p> Subject : {{product.name}}</p>
-                <p>Location : {{product.location}}</p>
-                <P>Price : £{{product.price}}</P>
-                <P>Availbility : {{product.spaces}}</P>
-                <img v-bind:src="product.image" alt="image" width="300"
-                    height="200">
-                <button v-on:click='addToCart' v-if="canAddToCart">Add to
-                    Cart</button>
-                <button disabled='disabled' v-else>Add to cart</button>
+
+                <div v-for='product in sortedProducts'>
+                    <h1 v-text="sitename"></h1>
+                    <p> Subject : {{product.name}}</p>
+                    <p>Location : {{product.location}}</p>
+                    <P>Price : £{{product.price}}</P>
+                    <P>Availbility : {{product.spaces}}</P>
+                    <img v-bind:src="product.image" alt="image" width="300"
+                        height="200">
+                    <button
+                        v-on:click='addToCart(product)':disabled='!canAddToCart(product)'>Add
+                        to
+                        Cart</button>
+                    <span v-if='itemLeft(product) === 0'> All out</span>
+                    <span v-else-if='itemLeft(product) <5'>
+                        only{{itemLeft(product)}} left! </span>
+                    <span v-else> Buy now!</span>
+                    <button disabled='disabled' v-else>Add to cart</button>
+                    <div>
+                        <span v-for='n in product.rating'>★</span>
+                        <span v-for='n in 5-product.rating'>☆</span>
+
+                    </div>
+                </div>
             </div>
             <div v-else>
                 <h2>checkout</h2>
@@ -90,8 +105,7 @@
                 <p>First Name :{{order.firstName}}</p>
                 <p>Last Name :{{order.lastName}}</p>
                 <p>Zip : {{order.zip}}</p>
-                <!-- <p>Address :{{order.address}}</p>
-                <p>City :{{order.city}}</p> -->
+                <p>City :{{order.city}}</p>
                 <p>State : {{order.state}}</p>
                 <p>Gift {{order.gift}}</p>
                 <button @click='submitForm'> place order </button>
@@ -105,14 +119,16 @@
                 data: {
                     showProduct: true,
                     sitename: 'After School Club',
-                    product: {
-                        id: 1321,
-                        name: "Mathmatics",
-                        location: "Hendon",
-                        price: 40.00,
-                        image: "mathsPic.jpg",
-                        spaces: 6
-                    },
+                    products:products,
+                    // product:{
+                    //     id: 1001,
+                    //     name: "Mathmatics",
+                    //     location: "Hendon",
+                    //     price: 40.00,
+                    //     image: "mathsPic.jpg",
+                    //     spaces: 10,
+                    //     rating:4
+                    // },
                     cart: [],
                     order:{
                         firstName:'',
@@ -121,44 +137,61 @@
                         city:'',
                         zip:'',
                         method:'',
-                    
                         sendGift:'Send as a Gift',
-                        dontSendGift:'Do not send as a gift',
-                        // states:{
-                        //     AL:'ALbama',
-                        //     AR:'Arizona',
-                        //     CA: 'California',
-                        //     NV: 'Nevada'
-                        // },
+                        dontSendGift:'Do not send as a gift'
                     }   
                 },
                 methods: {
-                    addToCart: function () {
-                        if (this.product.spaces === 0){
-                        this.disableBtn = true;}
-                        else  {
-                        this.product.spaces -= 1;    
-                        this.cart.push(this.product.id)
-                       }
-                    },
+                    addToCart(product) {
+                        // if (this.product.spaces === 0){
+                        // this.disableBtn = true;}
+                        // else  {
+                        // this.product.spaces -= 1;    
+                        // this.cart.push(this.product.id)
+
+                        this.cart.push(product.id);
+                       },
+                    
                     showCheckout() {
                          this.showProduct = this.showProduct ? false : true;
                         //  if(this.product.cart ===0 ){
                         //      this.showCheckout = true;
                         //  }
-
-                       
                     },
                      submitForm() {
                             alert('order Submitted')
-                            console.log('order submitted')
+                            
+                    },
+                    canAddToCart(product) {
+                        return product.spaces > this.cartCount(product.id);
+                    },
+                    cartCount(id){
+                        let count = 0;
+                        for(let i =0; i < this.cart.length; i++){
+                            if(this.cart[i] === id){
+                                count++;
+                            }
                         }
-                },
-                computed: {
-                    cartItemCount: function () {
-                        return this.cart.length || '';
+                        return count
+                    },
+                    itemLeft(product){
+                        return product.spaces - this.cartCount(product.id)
                     }
                 },
+                computed:{
+                    cartItemCount() {
+                        return this.cart.length;
+                    },
+                    sortedProducts(){
+                      function compare(a,b){
+                        if(a.price > b.price) return 1
+                        if(a.price < b.price) return -1
+                        return 0;
+                    }
+                    return this.products.sort(compare)
+                 }
+                },
+            
             });
         </script>
     </body>
