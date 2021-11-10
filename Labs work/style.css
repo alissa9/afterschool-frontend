@@ -1,27 +1,43 @@
      #app>div {
          /* position: absolute; */
          margin-top: 5%;
-        background-color: rgb(247, 244, 244);
-         /* margin-left: 40%; */
-        /* margin-right: 10%;  */
+         background-color: rgb(171 166 182);
+
       
         text-align: center;
-        border-radius: 29px;
+        border-radius: 50px;
+    
         display:flex;
         flex-wrap: wrap;
         justify-items: center;
         padding-left: 5%;
-        
+       
     }
-    #checkout {
+ 
+
+    
+    button#checkout {
+        border-radius: 21;
+        position: absolute;
+        margin-left: 77%;}
+
+        
+    #header{
         display: flex;
-    margin-left: 80%;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        
     }
 
     #items{
         margin: 70px;
         margin-left: 80px;
 
+    }
+
+    img {
+        border-radius: 50px;
     }
         
        
@@ -36,7 +52,7 @@
     .box{
         
         position:absolute;
-        top: 7%;
+        top:50%;
         left: 50%;
         transform: translate(-50%,-50%);
     }
