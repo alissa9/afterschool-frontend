@@ -18,7 +18,7 @@
 
 select#sort {
   border-radius: 10px;
-  margin-left: 150%;
+  margin-left: 100%;
   position: inherit;
   background-color: floralwhite;
 }
@@ -104,4 +104,19 @@ i#searchIcon {
 .box:hover i {
   opacity: 0;
   z-index: -1;
+}
+
+.cartContainer{
+display: flex;
+flex-direction:column;
+justify-content: space-between;
+}
+
+
+
+.checkoutContainer{
+  display: flex;
+ 
+  justify-content: space-around
+  
 }

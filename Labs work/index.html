@@ -1,145 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/vue"></script>
-    <title>After School Club</title>
-    <script src="https://kit.fontawesome.com/5313b89217.js" crossorigin="anonymous"></script>
-    <script src="products.js"></script>
-    <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-    <div id="app">
-        <div id="header">
-            <h1 v-text="sitename" id="sitename"></h1>
-            <div class="box">
-                <form name="search">
-                    <input type="text" class="input" name="txt" />
-                </form>
-                <i id="searchIcon" class="fas fa-search"></i>
-            </div>
-            <div v-model="sortOption">
-                <select id="sort">
-                    <option v-for="option in options">{{option}}</option>
-                </select>
-            </div>
-
-            <button v-on:click="showCheckout" id="checkout">
-                <span v-show="cart.length>0">{{cartItemCount}}</span>
-                <span class="fa solid fa-cart-plus" style="font-size: 20px"></span>
-            </button>
-        </div>
-
-        <div v-if="showProduct">
-            <div v-for="product in sortedProducts" id="items">
-                <img v-bind:src="product.image" alt="image" width="300" height="200" />
-                <p><i class="fas fa-book"></i> {{product.name}}</p>
-                <p><i class="fas fa-map-marked-alt"></i> {{product.location}}</p>
-                <p><i class="fas fa-pound-sign"></i> {{product.price}}</p>
-                <p>
-                    <i class="fas fa-history"> </i><span v-if="itemLeft(product) === 0"> Unavailable</span>
-                    <span v-else="itemLeft(product) < 5"> {{itemLeft(product)}} </span>
-                </p>
-
-                <button v-on:click="addToCart(product)" :disabled="!canAddToCart(product)" id="addCart">
-                    <i class="fas fa-plus"></i>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://unpkg.com/vue"></script>
+        <title>After School Club</title>
+        <script src="https://kit.fontawesome.com/5313b89217.js" crossorigin="anonymous"></script>
+        <script src="products.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="app">
+            <div id="header">
+                <h1 v-text="sitename" id="sitename"></h1>
+                <!-- Search bar -->
+                <div class="box">
+                    <div name="search">
+                        <input v-on:input="searchProduct" v-model="searchText" type="text" class="input" name="txt" />
+                    </div>
+                    <i id="searchIcon" class="fas fa-search"></i>
+                </div>
+                <!-- Sort By button -->
+                <div>
+                    <select id="sort" @change="sortBy" v-model="sortOption">
+                        <option v-for="option in options">{{option}}</option>
+                    </select>
+                </div>
+                <!-- checkout button -->
+                <button v-bind:disabled="!cart.length > 0" v-on:click="showCheckout" id="checkout">
+                    <span v-show="cart.length>0">{{cartItemCount}}</span>
+                    <span class="fa solid fa-cart-plus" style="font-size: 20px"></span>
                 </button>
-
-                <button disabled="disabled" v-else>Add to cart</button>
+            </div>
+            <!-- products(lessons)  -->
+            <div v-if="showProduct">
+                <div v-for="product in serachResults" id="items">
+                    <img v-bind:src="product.image" alt="image" width="300" height="200" />
+                    <p><i class="fas fa-book"></i> {{product.name}}</p>
+                    <p><i class="fas fa-map-marked-alt"></i>
+                        {{product.location}}
+                    </p>
+                    <p><i class="fas fa-pound-sign"></i> {{product.price}}</p>
+                    <p>
+                        <i class="fas fa-history"> </i><span v-if="itemLeft(product) === 0"> Class is Full</span>
+                        <span v-else="itemLeft(product) <5">
+                            {{itemLeft(product)}} </span>
+                    </p>
+                    <!-- Add to cart button -->
+                    <button v-on:click="addToCart(product)" :disabled="!canAddToCart(product)" id="addCart">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Checkout Page -->
+            <div v-else>
+                <h2>checkout</h2>
+                <div class="checkoutContainer">
+                    <div class="cartContainer">
+                        <div v-for="carts in cart" :key="cart.id">
+                            <img v-bind:src="carts.image" alt="image" width="300" height="200">
+                            <p>{{carts.name}}</p>
+                            <p>£{{carts.price}}</p>
+                            <button @click="removeItem(carts)">Remove</button>
+                        </div>
+                    </div>
+                    <div class="formContainer">
+                        <form>
+                            <p><strong>Full Name:</strong><input v-on:input="validateData" v-model="order.fullName" />
+                            </p>
+                            <p><strong>Phone Number :</strong><input v-on:input="validateData"
+                                    v-model="order.phoneNumber" /></p>
+                            <button v-bind:disabled="!validForm" @click="submitForm">place order</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-        <div v-else>
-            <h2>checkout</h2>
-
-            <p v-for="carts in cart" :key="cart.id">{{carts}}</p>
-            <p><strong>First Name :</strong><input v-model="order.firstName" /></p>
-            <p><strong>Last Name:</strong><input v-model="order.lastName" /></p>
-            <button @click="submitForm">place order</button>
         </div>
-    </div>
-
-    <script>
-        let webstore = new Vue({
-            el: "#app",
-            data: {
-                showProduct: true,
-                sitename: "After School Club",
-                products: products,
-                cart: [],
-                sortOption: "",
-                options: ["High-Price", "Low-Price"],
-                order: {
-                    name: "",
-                    phone: "",
-                },
-            },
-            methods: {
-                addToCart(product) {
-                    // if (this.product.spaces === 0){
-                    // this.disableBtn = true;}
-                    // else  {
-                    // this.product.spaces -= 1;
-                    // this.cart.push(this.product.id)
-                    this.cart.push(product.id);
-                },
-
-                showCheckout() {
-                    this.showProduct = !this.showProduct;
-                    //  if(this.product.cart ===0 ){
-                    //      this.showCheckout = true;
-                    //  }
-                },
-                submitForm() {
-                    alert("order Submitted");
-                },
-                canAddToCart(product) {
-                    return product.spaces > this.cartCount(product.id);
-                },
-                cartCount(id) {
-                    let count = 0;
-                    for (let i = 0; i < this.cart.length; i++) {
-                        if (this.cart[i] === id) {
-                            count++;
-                        }
-                    }
-                    return count;
-                },
-                itemLeft(product) {
-                    return product.spaces - this.cartCount(product.id);
-                },
-
-                sortBy() {
-                    switch (this.sortOption) {
-                        case "High-Price":
-                            this.products.sort((a, b) => a.price - b.price);
-                            break;
-                        case "Low-Price":
-                            this.products.sort((a, b) => b.price - a.price);
-                            break;
-                        default:
-                            break;
-                    }
-                },
-            },
-            computed: {
-                cartItemCount() {
-                    return this.cart.length;
-                },
-                sortedProducts() {
-                    function compare(a, b) {
-                        if (a.price > b.price) return 1;
-                        if (a.price < b.price) return -1;
-                        return 0;
-                    }
-                    return this.products.sort(compare);
-                },
-            },
-        });
-    </script>
-</body>
-
+        <script src="app.js"></script>
+    </body>
 </html>

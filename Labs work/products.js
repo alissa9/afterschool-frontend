@@ -29,7 +29,7 @@ let products = [
   {
     id: 1004,
     name: "IT",
-    location: "Hendon",
+    location: "Ealing",
     price: 47.0,
     image: "images/IT.jpg",
     spaces: 6,
@@ -37,7 +37,7 @@ let products = [
   {
     id: 1005,
     name: "English",
-    location: "Hendon",
+    location: "Hammersmith",
     price: 47.0,
     image: "images/english.jpg",
     spaces: 6,
@@ -45,15 +45,15 @@ let products = [
   {
     id: 1006,
     name: "Drama",
-    location: "Hendon",
+    location: "Northolt",
     price: 39.0,
     image: "images/drama.jpg",
-    spaces: 5,
+    spaces: 0,
   },
   {
     id: 1007,
     name: "Swimming",
-    location: "Hendon",
+    location: "Kingsbury",
     price: 55.0,
     image: "images/swimming.png",
     spaces: 5,
@@ -61,7 +61,7 @@ let products = [
   {
     id: 1008,
     name: "History",
-    location: "Hendon",
+    location: "Edgware",
     price: 46.0,
     image: "images/history.jpg",
     spaces: 7,
@@ -77,7 +77,7 @@ let products = [
   {
     id: 1010,
     name: "Music",
-    location: "Hendon",
+    location: "Vauxhall",
     price: 46.0,
     image: "images/music.jpg",
     spaces: 8,
