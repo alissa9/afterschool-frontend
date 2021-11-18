@@ -6,7 +6,7 @@ new Vue({
         products: products,
         cart: [],
         sortOption: "",
-        options: ["High-Price", "Low-Price", "Lessons-A-Z", "Lessons Z-A", "Low-Availability", "High-Availability", "Location A-Z", "Location Z-A"],
+        options: ["High-Price", "Low-Price", "Lessons A-Z", "Lessons Z-A", "Low-Availability", "High-Availability", "Location A-Z", "Location Z-A"],
         order: {
             fullName: "",
             phoneNumber: "",
@@ -49,9 +49,6 @@ new Vue({
         },
 
         validateData() {
-            let nameExpression = "/^[a-zA-Z]+$/";
-            let phoneExpression = "/^\d+$/";
-
             if (/^[a-zA-Z]+$/.test(this.order.fullName) && (/^\d+$/.test(this.order.phoneNumber))) {
                 this.validForm = true;
             } else {
@@ -91,7 +88,7 @@ new Vue({
                     this.products.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
                     this.serachResults.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
                     break;
-                case "Lessons-A-Z":
+                case "Lessons A-Z":
                     this.products.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
                     this.serachResults.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
                     break;
@@ -109,7 +106,7 @@ new Vue({
         cartItemCount() {
             return this.cart.length;
         },
-        
+
 
 
     }
