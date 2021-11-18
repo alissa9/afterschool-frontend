@@ -24,7 +24,7 @@ a#sitename {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background-color: antiquewhite;
+  background-color: rgb(171 194 193 / 66%);
   border-radius: 10px;
 
 }
@@ -103,6 +103,7 @@ i#searchIcon {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: end;
 
 }
 button#addCart {

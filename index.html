@@ -34,7 +34,6 @@
                 <div class="sortContainer">
                     <p>Sort By</p>
                     <select id="sort" @change="sortBy" v-model="sortOption">
-
                         <option v-for="option in options">{{option}}</option>
                     </select>
                 </div>
@@ -66,31 +65,34 @@
             </div>
         </div>
         <!-- Cart/Checkout Page -->
-        <div v-else>
-            <div class="checkoutContainer">
-                <h1>Basket</h1>
-                <div class="cartContainer">
 
-                    <div v-for="carts in cart" :key="cart.id" class="productContainer">
-                        <img v-bind:src="carts.image" alt="image" width="150" height="100">
-                        <p>{{carts.name}}</p>
-                        <p>£{{carts.price}}</p>
-                        <button @click="removeItem(carts)">Remove</button>
+        <div v-else>
+            <div v-if="!orderSubmitted" style="display: flex;">
+                <div class="checkoutContainer">
+                    <h1>Basket</h1>
+                    <div class="cartContainer">
+                        <div v-for="carts in cart" :key="cart.id" class="productContainer">
+                            <img v-bind:src="carts.image" alt="image" width="150" height="100">
+                            <p>{{carts.name}}</p>
+                            <p>£{{carts.price}}</p>
+                            <button @click="removeItem(carts)">Remove</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Checkout form -->
-            <div class="formContainer">
-                <h1>Checkout</h1>
-                <p>Enter Your Details To Checkout</p>
-                <form>
+
+                <!-- Checkout form -->
+                <div class="formContainer">
+                    <h1>Checkout</h1>
+                    <p>Enter Your Details To Checkout</p>
                     <p><strong>Full Name </strong><span></span><input v-on:input="validateData"
-                            v-model="order.fullName" />
-                    </p>
+                            v-model="order.fullName" /></p>
                     <p><strong>Phone Number </strong><input v-on:input="validateData" v-model="order.phoneNumber" />
                     </p>
                     <button v-bind:disabled="!validForm" @click="submitForm">place order</button>
-                </form>
+                </div>
+            </div>
+            <div v-else-if="orderSubmitted">
+                <h1 style="color: green;">Your Order Has Been Placed!</h1>
             </div>
 
         </div>

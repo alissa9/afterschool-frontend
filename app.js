@@ -13,6 +13,7 @@ new Vue({
       "Availability",
       "Location",
     ],
+    orderSubmitted:false,
     order: {
       fullName: "",
       phoneNumber: "",
@@ -72,8 +73,12 @@ new Vue({
     },
 
     submitForm() {
-      alert("Order Submitted");
+      this.orderSubmitted=true;
+      this.cart=[];
+      
     },
+
+    // Sort products by
     sortBy() {
       switch (this.sortOption) {
         case "Price":
@@ -134,7 +139,6 @@ new Vue({
     cartItemCount() {
       return this.cart.length;
     },
-    // Sort products by
-   
+    
   },
 });
