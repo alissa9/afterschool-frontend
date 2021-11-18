@@ -48,7 +48,7 @@ let products = [
     location: "Northolt",
     price: 39.0,
     image: "images/drama.jpg",
-    spaces: 0,
+    spaces: 5,
   },
   {
     id: 1007,

@@ -1,113 +1,140 @@
 new Vue({
-    el: "#app",
-    data: {
-        showProduct: true,
-        sitename: "After School Club",
-        products: products,
-        cart: [],
-        sortOption: "",
-        options: ["High-Price", "Low-Price", "Lessons A-Z", "Lessons Z-A", "Low-Availability", "High-Availability", "Location A-Z", "Location Z-A"],
-        order: {
-            fullName: "",
-            phoneNumber: "",
-        },
-        validForm: false,
-        searchText: "",
-        serachResults: products,
+  el: "#app",
+  data: {
+    showProduct: true,
+    sitename: "After School Club",
+    products: products,
+    cart: [],
+    orderOption: "",
+    sortOption: "",
+    options: [
+      "Price",
+      "Lessons",
+      "Availability",
+      "Location",
+    ],
+    order: {
+      fullName: "",
+      phoneNumber: "",
     },
-    methods: {
-        addToCart(product) {
-            this.cart.push(product);
-        },
-
-        showCheckout() {
-            this.showProduct = !this.showProduct;
-
-        },
-        submitForm() {
-            alert("order Submitted");
-        },
-        canAddToCart(product) {
-            return product.spaces > this.cartCount(product);
-        },
-        cartCount(product) {
-            let count = 0;
-            for (let i = 0; i < this.cart.length; i++) {
-                if (this.cart[i].id === product.id) {
-                    count++;
-                }
-            }
-            return count;
-        },
-        itemLeft(product) {
-            return product.spaces - this.cartCount(product);
-        },
-
-        removeItem(product) {
-            this.cart = this.cart.filter((item) => item.id != product.id)
-
-        },
-
-        validateData() {
-            if (/^[a-zA-Z]+$/.test(this.order.fullName) && (/^\d+$/.test(this.order.phoneNumber))) {
-                this.validForm = true;
-            } else {
-                this.validForm = false;
-            }
-
-        },
-        searchProduct() {
-            this.serachResults = this.products.filter((product) => product.name.toLowerCase().includes(this.searchText.toLowerCase()));
-            console.log("nice");
-
-        },
-
-        sortBy() {
-            switch (this.sortOption) {
-                case "Low-Price":
-                    this.products.sort((a, b) => a.price - b.price);
-                    this.serachResults.sort((a, b) => a.price - b.price);
-                    break;
-                case "High-Price":
-                    this.products.sort((a, b) => b.price - a.price);
-                    this.serachResults.sort((a, b) => b.price - a.price);
-                    break;
-                case "Low-Availability":
-                    this.products.sort((a, b) => a.spaces - b.spaces);
-                    this.serachResults.sort((a, b) => a.spaces - b.spaces);
-                    break;
-                case "High-Availability":
-                    this.products.sort((a, b) => b.spaces - a.spaces);
-                    this.serachResults.sort((a, b) => b.spaces - a.spaces);
-                    break;
-                case "Location A-Z":
-                    this.products.sort((a, b) => a.location.toLowerCase().localeCompare(b.location.toLowerCase()));
-                    this.serachResults.sort((a, b) => a.location.toLowerCase().localeCompare(b.location.toLowerCase()));
-                    break;
-                case "Location Z-A":
-                    this.products.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
-                    this.serachResults.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
-                    break;
-                case "Lessons A-Z":
-                    this.products.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-                    this.serachResults.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-                    break;
-                case "Lessons Z-A":
-                    this.products.sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
-                    this.serachResults.sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
-                    break;
-
-                default:
-                    break;
-            }
+    validForm: false,
+    searchText: "",
+    serachResults: products,
+  },
+  methods: {
+    // Add products to cart
+    addToCart(product) {
+      this.cart.push(product);
+    },
+    // Toggle checkout
+    showCheckout() {
+      this.showProduct = !this.showProduct;
+    },
+    // Checks if there is space to add to cart
+    canAddToCart(product) {
+      return product.spaces > this.cartCount(product);
+    },
+    // Counts the products in the cart
+    cartCount(product) {
+      let count = 0;
+      for (let i = 0; i < this.cart.length; i++) {
+        if (this.cart[i].id === product.id) {
+          count++;
         }
+      }
+      return count;
     },
-    computed: {
-        cartItemCount() {
-            return this.cart.length;
-        },
+    // Substract item when added to cart
+    itemLeft(product) {
+      return product.spaces - this.cartCount(product);
+    },
+    // Remove item from basket
+    removeItem(product) {
+      this.cart = this.cart.filter((item) => item.id != product.id);
+    },
+    // Validate input
+    validateData() {
+      if (
+        /^[a-zA-Z]+$/.test(this.order.fullName) &&
+        /^\d+$/.test(this.order.phoneNumber)
+      ) {
+        this.validForm = true;
+      } else {
+        this.validForm = false;
+      }
+    },
+    // Search products
+    searchProduct() {
+      this.serachResults = this.products.filter((product) =>
+        product.name.toLowerCase().includes(this.searchText.toLowerCase())
+      );
+      console.log("nice");
+    },
+
+    submitForm() {
+      alert("Order Submitted");
+    },
+    sortBy() {
+      switch (this.sortOption) {
+        case "Price":
+          if (this.orderOption == "Ascending") {
+            this.products.sort((a, b) => a.price - b.price);
+            this.serachResults.sort((a, b) => a.price - b.price);
+          } else {
+            this.products.sort((a, b) => b.price - a.price);
+            this.serachResults.sort((a, b) => b.price - a.price); 
+          }
+          break;
 
 
+        case "Availability":
+          if (this.orderOption == "Ascending") {
+            this.products.sort((a, b) => a.spaces - b.spaces);
+            this.serachResults.sort((a, b) => a.spaces - b.spaces);
+         
+          } else {
+            this.products.sort((a, b) => b.spaces - a.spaces);
+            this.serachResults.sort((a, b) => b.spaces - a.spaces);
+           
+          }
+          break;
 
-    }
+        case "Location":
+          if (this.orderOption == "Ascending") {
+            this.products.sort((a, b) => a.location.toLowerCase().localeCompare(b.location.toLowerCase()));
+            this.serachResults.sort((a, b) => a.location.toLowerCase().localeCompare(b.location.toLowerCase()));
+          } else {
+            this.products.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
+            this.serachResults.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
+          }
+          break;
+
+        case "Lessons":
+          if (this.orderOption == "Ascending") {
+            this.products.sort((a, b) =>a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+            this.serachResults.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
+            
+          }else{
+            this.products.sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
+            this.serachResults.sort((a, b) =>  b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
+
+          }
+
+        
+          break;
+
+        default:
+          break;
+      }
+    },
+
+  },
+  computed: {
+    cartItemCount() {
+      return this.cart.length;
+    },
+    // Sort products by
+   
+  },
 });
