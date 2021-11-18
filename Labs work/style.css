@@ -1,7 +1,9 @@
+
+
 /* main div */
 #app > div {
-  margin-top: 5%;
-  background-color: rgb(171 166 182);
+  margin-top: 7%;
+  /* background-color: rgb(171 166 182);   */
   text-align: center;
   border-radius: 50px;
   display: flex;
@@ -22,20 +24,21 @@ select#sort {
   position: inherit;
   background-color: floralwhite;
 }
-h1#sitename {
-  text-shadow: 0px 2px 24px #1000ff;
-  font-family: cursive;
-  position: inherit;
+a#sitename {
+  text-shadow: 0px 2px 24px #8093F1;
+  font-family: Comic Sans MS;
+   position: inherit;
   margin-right: 27%;
+  font-size: xx-large;
 }
 
 button#checkout {
   background-color: transparent;
   border-radius: inherit;
-  width: 50px;
-  height: 40px;
-  margin-right: 100px;
-  position: relative;
+  width: 70px;
+  height: 52px;
+  margin-right: 120px;
+  /* position: relative; */
 }
 
 /* body */
@@ -54,14 +57,18 @@ i.fas.fa-plus {
 }
 
 img {
-  border-radius: 50px;
+  border-radius: 25px;
 }
 
 body {
   margin: 0;
   padding: 0;
   background: #aba6b6;
-}
+  /* background-image: url(images/background.jfif); */
+  /* background-repeat: no-repeat; */
+  background-position:center;
+  background-size:contain;
+} 
 
 .box {
   position: absolute;
@@ -75,19 +82,19 @@ body {
   width: 80px;
   height: 80px;
   background: none;
-  border: 4px solid #4035d4a2;
+  border: 4px solid #f8f8f8a2;
   border-radius: 50px;
   box-sizing: border-box;
   font-family: Comic Sans MS;
   font-size: 26px;
-  color: #4035d4a2;
+  color: #B388EB;
   outline: none;
   transition: 0.5s;
 }
 
 .box:hover input {
   width: 350px;
-  background: #272133;
+  background: #928aa0;
   border-radius: 10px;
 }
 
@@ -108,15 +115,31 @@ i#searchIcon {
 
 .cartContainer{
 display: flex;
-flex-direction:column;
-justify-content: space-between;
+flex-direction:row;
+margin-bottom: 10px;
+width: 980px;
+position: relative;
 }
 
 
 
 .checkoutContainer{
   display: flex;
- 
-  justify-content: space-around
+  justify-content: space-around;
+  flex-direction: column;
+  border:outset;
+  margin-right: 1opx;
   
+}
+.formContainer {
+padding-top: 10px;
+margin-left: 20px;
+border: outset;
+width: 245px;
+padding-bottom: 10px;
+
+}
+
+.productContainer {
+  margin-left: 10px;
 }

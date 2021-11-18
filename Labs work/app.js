@@ -109,6 +109,8 @@ new Vue({
         cartItemCount() {
             return this.cart.length;
         },
+        
+
 
     }
 });
