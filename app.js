@@ -3,24 +3,29 @@ new Vue({
   data: {
     showProduct: true,
     sitename: "After School Club",
-    products: products,
+    products: null,
     cart: [],
     orderOption: "",
     sortOption: "",
-    options: [
-      "Price",
-      "Lessons",
-      "Availability",
-      "Location",
-    ],
-    orderSubmitted:false,
+    options: ["Price", "Lessons", "Availability", "Location"],
+    orderSubmitted: false,
     order: {
       fullName: "",
       phoneNumber: "",
     },
     validForm: false,
     searchText: "",
-    serachResults: products,
+    serachResults: null,
+  },
+
+  // fetching a list of lesson once the app opens
+  created() {
+    fetch("http://localhost:3000/collection/lessons")
+      .then((response) => response.json())
+      .then((data) => {
+        this.products = data;
+        this.serachResults = data;
+      });
   },
   methods: {
     // Add products to cart
@@ -73,9 +78,25 @@ new Vue({
     },
 
     submitForm() {
-      this.orderSubmitted=true;
-      this.cart=[];
-      
+      this.orderSubmitted = true;
+      this.cart.forEach((item) => {
+        fetch("http://localhost:3000/collection/orders", {
+          method: "POST",
+          headers: {
+            accept: "application/json, text/plain, */*",
+            "content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lessonID: item._id,
+            space: item.spaces,
+
+            name: this.order.fullName,
+            number: this.order.phoneNumber,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data));
+      });
     },
 
     // Sort products by
@@ -87,58 +108,65 @@ new Vue({
             this.serachResults.sort((a, b) => a.price - b.price);
           } else {
             this.products.sort((a, b) => b.price - a.price);
-            this.serachResults.sort((a, b) => b.price - a.price); 
+            this.serachResults.sort((a, b) => b.price - a.price);
           }
           break;
-
 
         case "Availability":
           if (this.orderOption == "Ascending") {
             this.products.sort((a, b) => a.spaces - b.spaces);
             this.serachResults.sort((a, b) => a.spaces - b.spaces);
-         
           } else {
             this.products.sort((a, b) => b.spaces - a.spaces);
             this.serachResults.sort((a, b) => b.spaces - a.spaces);
-           
           }
           break;
 
         case "Location":
           if (this.orderOption == "Ascending") {
-            this.products.sort((a, b) => a.location.toLowerCase().localeCompare(b.location.toLowerCase()));
-            this.serachResults.sort((a, b) => a.location.toLowerCase().localeCompare(b.location.toLowerCase()));
+            this.products.sort((a, b) =>
+              a.location.toLowerCase().localeCompare(b.location.toLowerCase())
+            );
+            this.serachResults.sort((a, b) =>
+              a.location.toLowerCase().localeCompare(b.location.toLowerCase())
+            );
           } else {
-            this.products.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
-            this.serachResults.sort((a, b) => b.location.toLowerCase().localeCompare(a.location.toLowerCase()));
+            this.products.sort((a, b) =>
+              b.location.toLowerCase().localeCompare(a.location.toLowerCase())
+            );
+            this.serachResults.sort((a, b) =>
+              b.location.toLowerCase().localeCompare(a.location.toLowerCase())
+            );
           }
           break;
 
         case "Lessons":
           if (this.orderOption == "Ascending") {
-            this.products.sort((a, b) =>a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-            this.serachResults.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-
-            
-          }else{
-            this.products.sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
-            this.serachResults.sort((a, b) =>  b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
-
+            this.products.sort((a, b) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
+            this.serachResults.sort((a, b) =>
+              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            );
+          } else {
+            this.products.sort((a, b) =>
+              b.name.toLowerCase().localeCompare(a.name.toLowerCase())
+            );
+            this.serachResults.sort((a, b) =>
+              b.name.toLowerCase().localeCompare(a.name.toLowerCase())
+            );
           }
 
-        
           break;
 
         default:
           break;
       }
     },
-
   },
   computed: {
     cartItemCount() {
       return this.cart.length;
     },
-    
   },
 });
