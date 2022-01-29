@@ -20,7 +20,7 @@ new Vue({
 
   // fetching a list of lesson once the app opens
   created() {
-    fetch("http://localhost:3000/collection/lessons")
+    fetch("https://after-school-club.herokuapp.com/collection/lessons")
       .then((response) => response.json())
       .then((data) => {
         this.products = data;
@@ -80,7 +80,7 @@ new Vue({
     submitForm() {
       this.orderSubmitted = true;
       this.cart.forEach((item) => {
-        fetch("http://localhost:3000/collection/orders", {
+        fetch("https://after-school-club.herokuapp.com/collection/orders", {
           method: "POST",
           headers: {
             accept: "application/json, text/plain, */*",
