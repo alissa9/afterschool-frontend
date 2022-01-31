@@ -1,104 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://kit.fontawesome.com/5313b89217.js" crossorigin="anonymous"></script>
-    <script src="products.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <title>After School Club</title>
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://kit.fontawesome.com/5313b89217.js" crossorigin="anonymous"></script>
+        <script src="products.js"></script>
+        <link rel="stylesheet" href="style.css" />
+        <title>After School Club</title>
+    </head>
 
-<body>
-    <div id="app">
-        <div id="header">
-            <A HREF="index.html" v-text="sitename" id="sitename"></A>
-            <!-- Search bar -->
-            <div class="box">
-                <div name="search">
-                    <input v-on:input="searchProduct" v-model="searchText" type="text" class="input" name="txt" />
+    <body>
+        <div id="app">
+            <div id="header">
+                <A HREF="index.html" v-text="sitename" id="sitename"></A>
+                <!-- Search bar -->
+                <div class="box">
+                    <div name="search">
+                        <input v-on:input="searchProduct" v-model="searchText" type="text" class="input" name="txt" />
+                    </div>
+                    <i id="searchIcon" class="fas fa-search"></i>
                 </div>
-                <i id="searchIcon" class="fas fa-search"></i>
-            </div>
-            <!-- Sort By button -->
-            <div>
-                <div class="sortRadio">
-                    <input v-model="orderOption" type="radio" name="sort" value="Ascending" checked @change="sortBy">
-                    <label for="Ascending">Ascending</label>
-                    <input v-model="orderOption" type="radio" name="sort" value="Decending" checked @change="sortBy">
-                    <label for="Decending">Decending</label>
-                </div>
-                <div class="sortContainer">
-                    <p>Sort By</p>
-                    <select id="sort" @change="sortBy" v-model="sortOption">
-                        <option v-for="option in options">{{option}}</option>
-                    </select>
-                </div>
-            </div>
-            <!-- checkout button -->
-            <button v-bind:disabled="!cart.length > 0" v-on:click="showCheckout" id="checkout">
-                <span v-show="cart.length>0">{{cartItemCount}}</span>
-                <span class="fa solid fa-cart-plus" style="font-size: 20px"></span>
-            </button>
-        </div>
-        <!-- products(lessons)  -->
-        <div v-if="showProduct">
-            <div v-for="product in serachResults" id="items">
-                <img v-bind:src="product.image" alt="image" class="productImage" />
-                <p><i class="fas fa-book"></i> {{product.name}}</p>
-                <p><i class="fas fa-map-marked-alt"></i>
-                    {{product.location}}
-                </p>
-                <p><i class="fas fa-pound-sign"></i> {{product.price}}</p>
-                <p>
-                    <i class="fas fa-history"> </i><span v-if="itemLeft(product) === 0"> Class is Full</span>
-                    <span v-else="itemLeft(product) <5">
-                        {{itemLeft(product)}} </span>
-                </p>
-                <!-- Add to cart button -->
-                <button v-on:click="addToCart(product)" :disabled="!canAddToCart(product)" id="addCart">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-        </div>
-        <!-- Cart/Checkout Page -->
-
-        <div v-else>
-            <div v-if="!orderSubmitted" style="display: flex;">
-                <div class="checkoutContainer">
-                    <h1>Basket</h1>
-                    <div class="cartContainer">
-                        <div v-for="carts in cart" :key="cart.id" class="productContainer">
-                            <img v-bind:src="carts.image" alt="image" width="150" height="100">
-                            <p>{{carts.name}}</p>
-                            <p>£{{carts.price}}</p>
-                            <button @click="removeItem(carts)">Remove</button>
-                        </div>
+                <!-- Sort By button -->
+                <div>
+                    <div class="sortRadio">
+                        <input v-model="orderOption" type="radio" name="sort" value="Ascending" checked
+                            @change="sortBy">
+                        <label for="Ascending">Ascending</label>
+                        <input v-model="orderOption" type="radio" name="sort" value="Decending" checked
+                            @change="sortBy">
+                        <label for="Decending">Decending</label>
+                    </div>
+                    <div class="sortContainer">
+                        <p>Sort By</p>
+                        <select id="sort" @change="sortBy" v-model="sortOption">
+                            <option v-for="option in options">{{option}}</option>
+                        </select>
                     </div>
                 </div>
+                <!-- checkout button -->
 
-                <!-- Checkout form -->
-                <div class="formContainer">
-                    <h1>Checkout</h1>
-                    <p>Enter Your Details To Checkout</p>
-                    <p><strong>Full Name </strong><span></span><input v-on:input="validateData"
-                            v-model="order.fullName" /></p>
-                    <p><strong>Phone Number </strong><input v-on:input="validateData" v-model="order.phoneNumber" />
+                <button v-bind:disabled="!cart.length > 0" v-on:click="showCheckout" id="checkout">
+                    <span v-show="cart.length>0">{{cartItemCount}}</span>
+                    <span class="fa solid fa-cart-plus" style="font-size: 20px"></span>
+                </button>
+            </div>
+            <!-- products(lessons)  -->
+            <div v-if="showProduct">
+                <div v-for="product in serachResults" id="items">
+                    <img v-bind:src="product.image" alt="image" class="productImage" />
+                    <p><i class="fas fa-book"></i> {{product.name}}</p>
+                    <p><i class="fas fa-map-marked-alt"></i>
+                        {{product.location}}
                     </p>
-                    <button v-bind:disabled="!validForm" @click="submitForm">place order</button>
+                    <p><i class="fas fa-pound-sign"></i> {{product.price}}</p>
+                    <p>
+                        <i class="fas fa-history"> </i>
+                        <i>
+                            {{product.spaces === 0 ? 'No Spaces Left ' : product.spaces}}
+                        </i>
+
+                    </p>
+                    <!-- Add to cart button -->
+                    <button v-on:click="addToCart(product)" :disabled="product.spaces===0" id="addCart">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
-            <div v-else-if="orderSubmitted">
-                <h1 style="color: green;">Your Order Has Been Placed!</h1>
-            </div>
+            <!-- Cart/Checkout Page -->
 
+            <div v-else>
+                <div v-if="!orderSubmitted" style="display: flex;">
+                    <div class="checkoutContainer">
+                        <h1>Basket</h1>
+                        <div class="cartContainer">
+                            <div v-for="carts in cart" :key="cart.id" class="productContainer">
+                                <img v-bind:src="carts.product.image" alt="image" width="150" height="100">
+                                <p>{{carts.product.name}}</p>
+                                <p>£{{carts.product.price *carts.quantity}}</p>
+                                <p>{{carts.quantity}}</p>
+
+                                <button @click="removeItem(carts)">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkout form -->
+                    <div class="formContainer">
+                        <h1>Checkout</h1>
+                        <p>Enter Your Details To Checkout</p>
+                        <p><strong>Full Name </strong><span></span><input v-on:input="validateData"
+                                v-model="order.fullName" /></p>
+                        <p><strong>Phone Number </strong><input v-on:input="validateData" v-model="order.phoneNumber" />
+                        </p>
+                        <button v-bind:disabled="!validForm" @click="submitForm">place order</button>
+                    </div>
+                </div>
+                <div v-else-if="orderSubmitted">
+                    <h1 style="color: green;">Your Order Has Been Placed!</h1>
+                </div>
+
+            </div>
         </div>
-    </div>
-    </div>
-    <script src="app.js"></script>
-</body>
+        </div>
+        <script src="app.js"></script>
+    </body>
 
 </html>

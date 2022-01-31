@@ -5,6 +5,7 @@ new Vue({
     sitename: "After School Club",
     products: null,
     cart: [],
+    toggle: false,
     orderOption: "",
     sortOption: "",
     options: ["Price", "Lessons", "Availability", "Location"],
@@ -16,25 +17,47 @@ new Vue({
     validForm: false,
     searchText: "",
     serachResults: null,
+    currentID: null,
+    orderID: null,
   },
 
   // fetching a list of lesson once the app opens
   created() {
-    fetch("https://after-school-club.herokuapp.com/collection/lessons")
-      .then((response) => response.json())
-      .then((data) => {
-        this.products = data;
-        this.serachResults = data;
-      });
+    this.getLessonsfromDB();
   },
   methods: {
+    getLessonsfromDB() {
+      fetch("http://localhost:3000/collection/lessons")
+        .then((response) => response.json())
+        .then((data) => {
+          this.products = data;
+          this.serachResults = data;
+        });
+    },
     // Add products to cart
     addToCart(product) {
-      this.cart.push(product);
+      this.currentID = product._id;
+      console.log(this.currentID);
+      const index = this.cart.findIndex(
+        (cartItem) => cartItem.product._id === product._id
+      );
+
+      if (index >= 0) {
+        this.cart[index].quantity += 1;
+      } else {
+        const cartItem = {
+          product: product,
+          quantity: 1,
+        };
+        this.cart.push(cartItem);
+      }
+      this.updateSpaces(product._id, product.spaces, 1);
     },
     // Toggle checkout
     showCheckout() {
       this.showProduct = !this.showProduct;
+      this.toggle = !this.toggle;
+      this.getLessonsfromDB();
     },
     // Checks if there is space to add to cart
     canAddToCart(product) {
@@ -50,13 +73,46 @@ new Vue({
       }
       return count;
     },
-    // Substract item when added to cart
-    itemLeft(product) {
-      return product.spaces - this.cartCount(product);
+    updateSpaces(productId, spaces, quantity) {
+      const leftSpace = spaces - quantity;
+      fetch(`http://localhost:3000/collection/lessons/${productId}`, {
+        method: "PUT",
+        headers: {
+          accept: "application/json, text/plain, */*",
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify({ spaces: leftSpace }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          this.getLessonsfromDB();
+        });
     },
-    // Remove item from basket
-    removeItem(product) {
-      this.cart = this.cart.filter((item) => item.id != product.id);
+
+    // remove lessons from cart then add back removed
+    removeItem(carts) {
+      carts.quantity -= 1;
+      if (carts.quantity == 0) {
+        this.cart = this.cart.filter(
+          (item) => item.product._id != carts.product._id
+        );
+      }
+      // Returing spaces after removing from basket
+      const currentProduct = this.products.filter(
+        (product) => product._id == carts.product._id
+      );
+      fetch(`http://localhost:3000/collection/lessons/${carts.product._id}`, {
+        method: "PUT",
+        headers: {
+          accept: "application/json, text/plain, */*",
+          "content-Type": "application/json",
+        },
+        body: JSON.stringify({ spaces: currentProduct[0].spaces + 1 }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          this.getLessonsfromDB();
+        });
     },
     // Validate input
     validateData() {
@@ -74,28 +130,37 @@ new Vue({
       this.serachResults = this.products.filter((product) =>
         product.name.toLowerCase().includes(this.searchText.toLowerCase())
       );
-      console.log("nice");
+      console.log("searching function");
     },
 
     submitForm() {
       this.orderSubmitted = true;
       this.cart.forEach((item) => {
-        fetch("https://after-school-club.herokuapp.com/collection/orders", {
+        const {
+          product: { _id, spaces, name },
+          quantity,
+        } = item;
+        fetch("http://localhost:3000/collection/orders", {
           method: "POST",
           headers: {
             accept: "application/json, text/plain, */*",
             "content-Type": "application/json",
           },
           body: JSON.stringify({
-            lessonID: item._id,
-            space: item.spaces,
-
+            lessonID: _id,
+            subject: name,
+            space: quantity,
             name: this.order.fullName,
             number: this.order.phoneNumber,
+            PurchaseDate: new Date().toDateString(),
           }),
         })
-          .then((response) => response.json())
-          .then((data) => console.log(data));
+          .then((res) => res.json())
+          .then((res) => {
+            this.orderId = res.orderId;
+            this.updateSpaces(_id, spaces, quantity);
+            this.cart = [0];
+          });
       });
     },
 
