@@ -40,8 +40,8 @@
                         </select>
                     </div>
                 </div>
+        
                 <!-- checkout button -->
-
                 <button v-bind:disabled="!cart.length > 0" v-on:click="showCheckout" id="checkout">
                     <span v-show="cart.length>0">{{cartItemCount}}</span>
                     <span class="fa solid fa-cart-plus" style="font-size: 20px"></span>
@@ -49,7 +49,7 @@
             </div>
             <!-- products(lessons)  -->
             <div v-if="showProduct">
-                <div v-for="product in serachResults" id="items">
+                <div v-for="product in products" id="items">
                     <img v-bind:src="product.image" alt="image" class="productImage" />
                     <p><i class="fas fa-book"></i> {{product.name}}</p>
                     <p><i class="fas fa-map-marked-alt"></i>
@@ -79,8 +79,8 @@
                             <div v-for="carts in cart" :key="cart.id" class="productContainer">
                                 <img v-bind:src="carts.product.image" alt="image" width="150" height="100">
                                 <p>{{carts.product.name}}</p>
-                                <p>£{{carts.product.price *carts.quantity}}</p>
-                                <p>{{carts.quantity}}</p>
+                                <p>Price £{{carts.product.price *carts.quantity}}</p>
+                                <p>Quantity: {{carts.quantity}}</p>
 
                                 <button @click="removeItem(carts)">Remove</button>
                             </div>

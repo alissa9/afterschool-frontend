@@ -5,7 +5,6 @@ new Vue({
     sitename: "After School Club",
     products: null,
     cart: [],
-    toggle: false,
     orderOption: "",
     sortOption: "",
     options: ["Price", "Lessons", "Availability", "Location"],
@@ -16,9 +15,9 @@ new Vue({
     },
     validForm: false,
     searchText: "",
-    serachResults: null,
     currentID: null,
     orderID: null,
+    completedOrder: false,
   },
 
   // fetching a list of lesson once the app opens
@@ -28,10 +27,9 @@ new Vue({
   methods: {
     getLessonsfromDB() {
       fetch("http://localhost:3000/collection/lessons")
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((data) => {
           this.products = data;
-          this.serachResults = data;
         });
     },
     // Add products to cart
@@ -56,7 +54,7 @@ new Vue({
     // Toggle checkout
     showCheckout() {
       this.showProduct = !this.showProduct;
-      this.toggle = !this.toggle;
+      this.completedOrder = false;
       this.getLessonsfromDB();
     },
     // Checks if there is space to add to cart
@@ -125,21 +123,24 @@ new Vue({
         this.validForm = false;
       }
     },
-    // Search products
+    // fetch request to search products in database
     searchProduct() {
-      this.serachResults = this.products.filter((product) =>
-        product.name.toLowerCase().includes(this.searchText.toLowerCase())
-      );
-      console.log("searching function");
+      fetch(
+        "http://localhost:3000/collection/lessons/search?q=" + this.searchText
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          this.products = data;
+        });
     },
 
-    submitForm() {
+    async submitForm() {
       this.orderSubmitted = true;
-      this.cart.forEach((item) => {
+      this.cart.forEach((carts) => {
         const {
           product: { _id, spaces, name },
           quantity,
-        } = item;
+        } = carts;
         fetch("http://localhost:3000/collection/orders", {
           method: "POST",
           headers: {
@@ -159,10 +160,13 @@ new Vue({
           .then((res) => {
             this.orderId = res.orderId;
             this.updateSpaces(_id, spaces, quantity);
-            this.cart = [0];
+            this.cart = [];
           });
       });
     },
+
+    // this.orderSubmitted = false;
+    // this.completedOrder = true;
 
     // Sort products by
     sortBy() {
@@ -170,20 +174,16 @@ new Vue({
         case "Price":
           if (this.orderOption == "Ascending") {
             this.products.sort((a, b) => a.price - b.price);
-            this.serachResults.sort((a, b) => a.price - b.price);
           } else {
             this.products.sort((a, b) => b.price - a.price);
-            this.serachResults.sort((a, b) => b.price - a.price);
           }
           break;
 
         case "Availability":
           if (this.orderOption == "Ascending") {
             this.products.sort((a, b) => a.spaces - b.spaces);
-            this.serachResults.sort((a, b) => a.spaces - b.spaces);
           } else {
             this.products.sort((a, b) => b.spaces - a.spaces);
-            this.serachResults.sort((a, b) => b.spaces - a.spaces);
           }
           break;
 
@@ -192,14 +192,8 @@ new Vue({
             this.products.sort((a, b) =>
               a.location.toLowerCase().localeCompare(b.location.toLowerCase())
             );
-            this.serachResults.sort((a, b) =>
-              a.location.toLowerCase().localeCompare(b.location.toLowerCase())
-            );
           } else {
             this.products.sort((a, b) =>
-              b.location.toLowerCase().localeCompare(a.location.toLowerCase())
-            );
-            this.serachResults.sort((a, b) =>
               b.location.toLowerCase().localeCompare(a.location.toLowerCase())
             );
           }
@@ -210,14 +204,8 @@ new Vue({
             this.products.sort((a, b) =>
               a.name.toLowerCase().localeCompare(b.name.toLowerCase())
             );
-            this.serachResults.sort((a, b) =>
-              a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-            );
           } else {
             this.products.sort((a, b) =>
-              b.name.toLowerCase().localeCompare(a.name.toLowerCase())
-            );
-            this.serachResults.sort((a, b) =>
               b.name.toLowerCase().localeCompare(a.name.toLowerCase())
             );
           }
