@@ -26,7 +26,7 @@ new Vue({
   },
   methods: {
     getLessonsfromDB() {
-      fetch("http://localhost:3000/collection/lessons")
+      fetch("https://after-school-club.herokuapp.com/collection/lessons")
         .then((res) => res.json())
         .then((data) => {
           this.products = data;
@@ -73,14 +73,17 @@ new Vue({
     },
     updateSpaces(productId, spaces, quantity) {
       const leftSpace = spaces - quantity;
-      fetch(`http://localhost:3000/collection/lessons/${productId}`, {
-        method: "PUT",
-        headers: {
-          accept: "application/json, text/plain, */*",
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify({ spaces: leftSpace }),
-      })
+      fetch(
+        `https://after-school-club.herokuapp.com/collection/lessons/${productId}`,
+        {
+          method: "PUT",
+          headers: {
+            accept: "application/json, text/plain, */*",
+            "content-Type": "application/json",
+          },
+          body: JSON.stringify({ spaces: leftSpace }),
+        }
+      )
         .then((res) => res.json())
         .then((res) => {
           this.getLessonsfromDB();
@@ -99,14 +102,17 @@ new Vue({
       const currentProduct = this.products.filter(
         (product) => product._id == carts.product._id
       );
-      fetch(`http://localhost:3000/collection/lessons/${carts.product._id}`, {
-        method: "PUT",
-        headers: {
-          accept: "application/json, text/plain, */*",
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify({ spaces: currentProduct[0].spaces + 1 }),
-      })
+      fetch(
+        `https://after-school-club.herokuapp.com/collection/lessons/${carts.product._id}`,
+        {
+          method: "PUT",
+          headers: {
+            accept: "application/json, text/plain, */*",
+            "content-Type": "application/json",
+          },
+          body: JSON.stringify({ spaces: currentProduct[0].spaces + 1 }),
+        }
+      )
         .then((res) => res.json())
         .then((res) => {
           this.getLessonsfromDB();
@@ -126,7 +132,8 @@ new Vue({
     // fetch request to search products in database
     searchProduct() {
       fetch(
-        "http://localhost:3000/collection/lessons/search?q=" + this.searchText
+        "https://after-school-club.herokuapp.com/collection/lessons/search?q=" +
+          this.searchText
       )
         .then((res) => res.json())
         .then((data) => {
@@ -141,7 +148,7 @@ new Vue({
           product: { _id, spaces, name },
           quantity,
         } = carts;
-        fetch("http://localhost:3000/collection/orders", {
+        fetch("https://after-school-club.herokuapp.com/collection/orders", {
           method: "POST",
           headers: {
             accept: "application/json, text/plain, */*",
@@ -165,8 +172,7 @@ new Vue({
       });
     },
 
-    // this.orderSubmitted = false;
-    // this.completedOrder = true;
+
 
     // Sort products by
     sortBy() {
