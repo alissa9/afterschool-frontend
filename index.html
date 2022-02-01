@@ -40,7 +40,7 @@
                         </select>
                     </div>
                 </div>
-        
+
                 <!-- checkout button -->
                 <button v-bind:disabled="!cart.length > 0" v-on:click="showCheckout" id="checkout">
                     <span v-show="cart.length>0">{{cartItemCount}}</span>
@@ -58,10 +58,7 @@
                     <p><i class="fas fa-pound-sign"></i> {{product.price}}</p>
                     <p>
                         <i class="fas fa-history"> </i>
-                        <i>
-                            {{product.spaces === 0 ? 'No Spaces Left ' : product.spaces}}
-                        </i>
-
+                        {{product.spaces === 0 ? 'No Spaces Left ' : product.spaces}}
                     </p>
                     <!-- Add to cart button -->
                     <button v-on:click="addToCart(product)" :disabled="product.spaces===0" id="addCart">
