@@ -38,16 +38,16 @@ self.addEventListener("install", (e) => {
 //   console.log("[Service Worker] Fetched resource " + e.request.url);
 // });
 
-self.addEventListener("fetch", function (e) {
-  e.respondWith(
-    // check if the cache has the file
-    caches.match(e.request).then(function (r) {
-      console.log("[Service Worker] Fetching resource: " + e.request.url);
-      // 'r' is the matching file if it exists in the cache
-      return r;
-    })
-  );
-});
+// self.addEventListener("fetch", function (e) {
+//   e.respondWith(
+//     // check if the cache has the file
+//     caches.match(e.request).then(function (r) {
+//       console.log("[Service Worker] Fetching resource: " + e.request.url);
+//       // 'r' is the matching file if it exists in the cache
+//       return r;
+//     })
+//   );
+// });
 
 // Cashing all the new files 
 self.addEventListener("fetch", function (e) {
